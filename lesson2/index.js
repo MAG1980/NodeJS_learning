@@ -27,32 +27,29 @@ timeEmitter.once('daysOver', Handler.day);
 timeEmitter.once('monthsOver', Handler.month);
 timeEmitter.once('yearsOver', Handler.year);
 
-
-
-
-delay = (	timeUnit, unitValue) => {
-	let coefficient = 1
-
-		switch (timeUnit){
-			case 'hour': {
-				coefficient = 3600 * 1000;
-				break;
-			}
-			case 'day': {
-				coefficient =  86400 * 1000;
-				break;
-			}
-			case 'month': {
-				coefficient = 2592000 * 1000;
-				break;
-			}
-			case 'year': {
-				coefficient = 31536000 * 1000;
-				break;
-			}
-		}
-		return coefficient *unitValue;
-};
+// delay = (	timeUnit, unitValue) => {
+// 	let coefficient = 1
+//
+// 		switch (timeUnit){
+// 			case 'hour': {
+// 				coefficient = 3600 * 1000;
+// 				break;
+// 			}
+// 			case 'day': {
+// 				coefficient =  86400 * 1000;
+// 				break;
+// 			}
+// 			case 'month': {
+// 				coefficient = 2592000 * 1000;
+// 				break;
+// 			}
+// 			case 'year': {
+// 				coefficient = 31536000 * 1000;
+// 				break;
+// 			}
+// 		}
+// 		return coefficient *unitValue;
+// };
 
 let hourCounter = arr[0];
 let hourMessage = `часов: ${hourCounter}`;
