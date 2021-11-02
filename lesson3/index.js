@@ -1,6 +1,6 @@
 const fs = require("fs");
 // const fsPromises = require("fsPromises");
-const readline = require("readline/promises");
+const readline = require("readline");
 
 const ACCESS_LOG = "./access.log";
 // const data = fs.readFile(ACCESS_LOG, "utf8", (err, data) => {
@@ -25,9 +25,30 @@ const readStream = fs.createReadStream(ACCESS_LOG, {
   end: 1048576,
   highWaterMark: 256,
 });
+// const writeStream1 = fs.createWriteStream('../89.123.1.41_requests.log', 'utf-8');
+// const writeStream2 = fs.createWriteStream('../34.48.240.111_requests.log', 'utf-8');
 
 // readStream.on("data", (chunk) => console.log(chunk));
 
-readline.on("line", (input) => {
-  console.log(`Received: ${input}`);
-});
+
+const rl = readline.createInterface( { input: readStream, terminal: true });
+
+// rl.on('line', (line) =>{
+//   if (line.includes('89.123.1.41')){
+//     writeStream1.write(line + "\n")
+//   }
+//   if (line.includes('34.48.240.111')){
+//     writeStream2.write(line + "\n")
+//   }
+//   })
+
+let adresses = ['89.123.1.41','34.48.240.111'];
+
+adresses.forEach((adress) => {
+  const writeStream = fs.createWriteStream(`./${adress}_requests.log`, 'utf-8');
+  rl.on('line', (line) =>{
+    if (line.includes(adress)){
+      writeStream.write(line + "\n")
+    }
+  })
+})
