@@ -25,6 +25,10 @@ class ListItem {
   }
 }
 
+if (options.d !== null) {
+  currentDirectory = options.d;
+}
+
 const run = async () => {
   const list = await fs.readdir(currentDirectory);
   const items = list.map(
