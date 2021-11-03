@@ -52,7 +52,12 @@ const run = async () => {
       console.log(data);
     } else {
       const regExp = new RegExp(options.p, "igm");
-      console.log(data.match(regExp));
+      let matchExp = data.match(regExp);
+      if (matchExp) {
+        console.log("Найденные совпадения:", matchExp);
+      } else {
+        console.log("Совпадений не найдено!");
+      }
     }
   }
 };
