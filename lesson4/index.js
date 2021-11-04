@@ -6,6 +6,7 @@ const path = require("path");
 
 let currentDirectory = process.cwd();
 const options = yargs
+  .usage("Usage: -d <Path to directory> -p <Pattern> ")
   .positional("d", {
     describe: "Path to directory",
     default: process.cwd(),
