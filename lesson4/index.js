@@ -26,7 +26,7 @@ class ListItem {
 }
 
 if (options.d !== null) {
-  currentDirectory = options.d;
+  currentDirectory = path.join(__dirname, options.d);
 }
 
 const run = async () => {
