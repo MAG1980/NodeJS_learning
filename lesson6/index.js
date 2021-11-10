@@ -15,6 +15,16 @@ const io = socket(server);
 io.on("connection", (client) => {
   console.log("New client connected!");
 
+  client.on("client-username", (data) => {
+    const payload = {
+      message: `${data.userName} is connected`,
+    };
+    console.log(payload);
+
+    client.broadcast.emit("server-msg", payload);
+    client.emit("server-msg", payload);
+  });
+
   client.on("client-msg", (data) => {
     // console.log(data);
     const payload = {

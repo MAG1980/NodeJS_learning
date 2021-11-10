@@ -7,14 +7,29 @@
     <script src="https://cdn.socket.io/4.2.0/socket.io.min.js"
         integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj"
         crossorigin="anonymous"></script>
+    <style>
+        .dn {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
-    <input id="input" type="text" autofocus>
-    <button id="button">Send</button>
-    <button id="disconnect-button">Disconnect</button>
+    <form id="name_input-form">
+        <p>Input yor name</p>
+        <input id="name_input" type="text" name="username" autofocus>
+        <button id="name_send" type="submit">Send UserName</button>
+    </form>
+
+    <form id='messages_input' class="dn">
+        <input id="input" type="text" autofocus>
+        <button id="button" type="submit">Send</button>
+    </form>
     <div id="messages"></div>
     <script>
+        const NameInputForm = document.getElementById('name_input-form');
+        const sendNameButton = document.getElementById('name_send');
+        const MessagesInput = document.getElementById('messages_input');
         const socket = io('localhost:5555');
         const messageBlock = document.querySelector('#messages');
         const sendButton = document.querySelector('#button');
@@ -24,6 +39,8 @@
 
         socket.on('connect', () => {
             console.log('Connected!');
+
+
         });
 
         socket.on('server-msg', data => {
@@ -31,19 +48,28 @@
             messageBlock.insertAdjacentHTML('beforeend', `<div>${data.message}</div>`)
         });
 
-        sendButton.addEventListener('click', () => {
+        sendButton.addEventListener('click', (e) => {
+            e.preventDefault();
             const data = {
                 message: input.value,
             };
-
+            input.value = '';
             socket.emit('client-msg', data);
         });
 
-        // disconnectButton.addEventListener('click', () => {
-        //     socket.emit('disconnect');
-        //     messageBlock.insertAdjacentHTML('beforeend', `<div>You are disconnected</div>`);
-        //     console.log('You are disconnected');
-        // })
+        sendNameButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const data = {
+                userName: name_input.value,
+            };
+            name_input = '';
+
+            socket.emit('client-username', data);
+            NameInputForm.classList.toggle('dn');
+            MessagesInput.classList.toggle('dn');
+        });
+
+
     </script>
 </body>
 
