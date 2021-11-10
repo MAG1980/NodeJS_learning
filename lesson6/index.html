@@ -11,6 +11,10 @@
         .dn {
             display: none;
         }
+
+        .df {
+            display: flex;
+        }
     </style>
 </head>
 
@@ -33,9 +37,9 @@
         const socket = io('localhost:5555');
         const messageBlock = document.querySelector('#messages');
         const sendButton = document.querySelector('#button');
-        // const disconnectButton = document.getElementById('disconnect-button');
         const input = document.querySelector('#input');
 
+        let userName = '';
 
         socket.on('connect', () => {
             console.log('Connected!');
@@ -45,12 +49,17 @@
 
         socket.on('server-msg', data => {
             console.log(data);
-            messageBlock.insertAdjacentHTML('beforeend', `<div>${data.message}</div>`)
+            messageBlock.insertAdjacentHTML('beforeend',
+                `<div class="df">
+                    <div> ${data.userName}:</div>
+                    <div>${data.message}</div>
+                </div>`)
         });
 
         sendButton.addEventListener('click', (e) => {
             e.preventDefault();
             const data = {
+                userName,
                 message: input.value,
             };
             input.value = '';
@@ -59,8 +68,9 @@
 
         sendNameButton.addEventListener('click', (e) => {
             e.preventDefault();
+            userName = name_input.value;
             const data = {
-                userName: name_input.value,
+                userName,
             };
             name_input = '';
 

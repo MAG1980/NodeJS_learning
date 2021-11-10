@@ -26,8 +26,9 @@ io.on("connection", (client) => {
   });
 
   client.on("client-msg", (data) => {
-    // console.log(data);
+    console.log(data);
     const payload = {
+      userName: data.userName,
       message: data.message.split("").reverse().join(""),
     };
 
