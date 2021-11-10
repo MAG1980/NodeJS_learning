@@ -27,6 +27,11 @@ io.on("connection", (client) => {
 
   client.on("disconnect", () => {
     console.log("Client is disconnected");
+    let payload = {
+      message: "Client is disconnected",
+    };
+    client.broadcast.emit("server-msg", payload);
+    client.emit("server-msg", payload);
   });
 });
 

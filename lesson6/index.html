@@ -27,7 +27,7 @@
         });
 
         socket.on('server-msg', data => {
-            // console.log(data);
+            console.log(data);
             messageBlock.insertAdjacentHTML('beforeend', `<div>${data.message}</div>`)
         });
 
