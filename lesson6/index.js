@@ -1,7 +1,11 @@
+// import nanoid from "nanoid";
 const socket = require("socket.io");
 const http = require("http");
 const path = require("path");
 const fs = require("fs");
+const { nanoid } = require("nanoid");
+
+const DB_Users = [];
 
 const server = http.createServer((req, res) => {
   const indexPath = path.join(__dirname, "index.html");
@@ -16,13 +20,30 @@ io.on("connection", (client) => {
   console.log("New client connected!");
 
   client.on("client-username", (data) => {
+    console.log(data);
+    if (data.userID) {
+      userID = nanoid();
+    } else {
+      userID = data.userID;
+    }
     const payload = {
-      message: `${data.userName} is connected`,
+      userName: data.userName,
+      message: `I'm connected`,
     };
-    console.log(payload);
 
+    const payloadWithUserID = {
+      ...payload,
+      userID,
+    };
+    console.log(payloadWithUserID);
     client.broadcast.emit("server-msg", payload);
-    client.emit("server-msg", payload);
+    client.emit("server-msg", payloadWithUserID);
+    console.log(payloadWithUserID.userID);
+    DB_Users.push({
+      userID: payloadWithUserID.userID,
+      userName: payloadWithUserID.userName,
+    });
+    console.log(DB_Users);
   });
 
   client.on("client-msg", (data) => {

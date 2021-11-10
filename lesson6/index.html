@@ -28,6 +28,7 @@
     <form id='messages_input' class="dn">
         <input id="input" type="text" autofocus>
         <button id="button" type="submit">Send</button>
+        <button id="button_reset_auth" type="button" onclick="clearLocalStorageUserData()">Reset authorization</button>
     </form>
     <div id="messages"></div>
     <script>
@@ -41,6 +42,17 @@
 
         let userName = '';
 
+        function clearLocalStorageUserData() {
+            localStorage.userID = null;
+            NameInputForm.classList.toggle('dn');
+            MessagesInput.classList.toggle('dn');
+        }
+
+        if (localStorage.userID) {
+            NameInputForm.classList.add('dn');
+            MessagesInput.classList.remove('dn');
+        }
+
         socket.on('connect', () => {
             console.log('Connected!');
 
@@ -48,10 +60,16 @@
         });
 
         socket.on('server-msg', data => {
-            console.log(data);
+            console.log(localStorage.userID);
+            if (localStorage.userID) {
+                localStorage.userID = data.userID;
+                localStorage.userName = data.userName;
+            }
+            console.log(localStorage.userName);
+            console.log(localStorage.userID);
             messageBlock.insertAdjacentHTML('beforeend',
                 `<div class="df">
-                    <div> ${data.userName}:</div>
+                    <div>${data.userName}: </div>
                     <div>${data.message}</div>
                 </div>`)
         });
@@ -70,9 +88,11 @@
             e.preventDefault();
             userName = name_input.value;
             const data = {
+                userID: localStorage.userID,
                 userName,
             };
             name_input = '';
+            console.log(data);
 
             socket.emit('client-username', data);
             NameInputForm.classList.toggle('dn');
