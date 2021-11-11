@@ -19,6 +19,7 @@
 </head>
 
 <body>
+    <div>Users on-line: <span id="users-online-counter">0</span></div>
     <form id="name_input-form">
         <p>Input yor name</p>
         <input id="name_input" type="text" name="username" autofocus>
@@ -39,6 +40,7 @@
         const messageBlock = document.querySelector('#messages');
         const sendButton = document.querySelector('#button');
         const input = document.querySelector('#input');
+        const UsersOnlineCounter = document.getElementById('users-online-counter');
 
         let userName = '';
 
@@ -82,6 +84,18 @@
                     <div>${data.message}</div>
                 </div>`)
         });
+
+        socket.on('disconnect-user', data => {
+            messageBlock.insertAdjacentHTML('beforeend',
+                `<div class="df">
+                    <div>User name: ${data.userName} is disconnected </div>
+                </div>`)
+        });
+
+        socket.on('users-counter-update', counterUsersPayload => {
+            UsersOnlineCounter.innerHTML = counterUsersPayload.usersOnlineCounter;
+            console.log(counterUsersPayload);
+        })
 
         sendButton.addEventListener('click', (e) => {
             e.preventDefault();

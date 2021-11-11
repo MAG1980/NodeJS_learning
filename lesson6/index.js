@@ -21,14 +21,11 @@ var allClients = [];
 io.sockets.on("connection", function (socket) {
   allClients.push(socket);
   // console.log(allClients);
-  console.log(allClients);
-  console.log(allClients.length);
+  // console.log(allClients.length);
 });
 
 io.on("connection", (client) => {
   console.log(`New client with id: ${client.id} connected!`);
-  // console.log(client);
-  // console.log(client.id);
 
   client.on("client-reconnection", (data) => {
     client.id = data.userID;
@@ -37,6 +34,11 @@ io.on("connection", (client) => {
       `Client ${client.userName} with id: ${client.id} id reconnected!`
     );
     console.log(allClients.length);
+
+    let counterUsersPayload = {
+      usersOnlineCounter: allClients.length,
+    };
+    client.broadcast.emit("users-counter-update", counterUsersPayload);
   });
 
   client.on("client-username", (data) => {
@@ -61,13 +63,19 @@ io.on("connection", (client) => {
       userName: payloadWithUserID.userName,
     });
     // console.log(DB_Users);
+
+    let counterUsersPayload = {
+      usersOnlineCounter: allClients.length,
+    };
+    client.broadcast.emit("users-counter-update", counterUsersPayload);
   });
 
   client.on("client-msg", (data) => {
     console.log(data);
     const payload = {
       userName: data.userName,
-      message: data.message.split("").reverse().join(""),
+      // message: data.message.split("").reverse().join(""),
+      message: data.message,
     };
 
     client.broadcast.emit("server-msg", payload);
@@ -79,18 +87,22 @@ io.on("connection", (client) => {
       `Client id: ${client.id} name: ${client.userName} is disconnected`
     );
     let payload = {
-      message: "Client is disconnected",
+      userName: client.userName,
     };
-    console.log(allClients);
+
     let disconnectedUser = allClients.filter((inArrClient) => {
       return inArrClient.id === client.id;
     });
-    console.log(disconnectedUser);
+
     let disconnectedUserIndex = allClients.indexOf(disconnectedUser);
     allClients.splice(disconnectedUserIndex, 1);
-    console.log(allClients.length);
-    client.broadcast.emit("server-msg", payload);
-    client.emit("server-msg", payload);
+
+    client.broadcast.emit("disconnect-user", payload);
+
+    let counterUsersPayload = {
+      usersOnlineCounter: allClients.length,
+    };
+    client.broadcast.emit("users-counter-update", counterUsersPayload);
   });
 });
 
