@@ -43,7 +43,8 @@
         let userName = '';
 
         function clearLocalStorageUserData() {
-            localStorage.userID = null;
+            delete localStorage.userID;
+            delete localStorage.userName;
             NameInputForm.classList.toggle('dn');
             MessagesInput.classList.toggle('dn');
         }
@@ -54,14 +55,22 @@
         }
 
         socket.on('connect', () => {
-            console.log('Connected!');
-
+            console.log("Connection established");
+            if (localStorage.userID) {
+                const data = {
+                    userID: localStorage.userID,
+                    userName: localStorage.userName
+                }
+                socket.emit('client-reconnection', data);
+                console.log(data);
+            }
 
         });
 
         socket.on('server-msg', data => {
+            console.log(localStorage.userName);
             console.log(localStorage.userID);
-            if (localStorage.userID) {
+            if (!localStorage.userID) {
                 localStorage.userID = data.userID;
                 localStorage.userName = data.userName;
             }
@@ -86,10 +95,8 @@
 
         sendNameButton.addEventListener('click', (e) => {
             e.preventDefault();
-            userName = name_input.value;
             const data = {
-                userID: localStorage.userID,
-                userName,
+                userName: name_input.value
             };
             name_input = '';
             console.log(data);
